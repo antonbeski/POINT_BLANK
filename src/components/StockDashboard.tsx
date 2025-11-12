@@ -678,10 +678,6 @@ function LegendDot({
   color,
   label,
   hollow = false
-
-
-
-
 }: {color: string;label: string;hollow?: boolean;}) {
   return (
     <span className="inline-flex items-center gap-2">
@@ -704,9 +700,6 @@ function LegendDot({
 function EmptyState({
   title,
   description
-
-
-
 }: {title: string;description: string;}) {
   return (
     <div className="rounded-xl bg-card/40 p-6 text-center ring-1 ring-border">
@@ -734,21 +727,6 @@ function ChartCanvas({
   isLoading,
   chartType = "candles",
   logScale = false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }: {data: OHLCV[];ma20?: number[];ma50?: number[];ema12?: number[];rsi14?: number[];bbUpper?: number[];bbMiddle?: number[];bbLower?: number[];macdLine?: number[];macdSignal?: number[];macdHist?: number[];isLoading: boolean;chartType?: "candles" | "line";logScale?: boolean;}) {
   if (isLoading) {
     return (
@@ -1110,15 +1088,4 @@ function ChartCanvas({
       </div>
     </div>);
 
-}
-
-function LoadingScreen({ fullScreen, message }: {fullScreen?: boolean;message: string;}) {
-  return (
-    <div className={`absolute inset-0 z-50 ${fullScreen ? "w-full h-full" : "w-full h-full"} rounded-[16px] bg-background/95 backdrop-blur-sm flex items-center justify-center`}>
-      <div className="text-center">
-        <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-        <p className="mt-4 text-lg font-medium text-primary">{message}</p>
-      </div>
-    </div>
-  );
 }
