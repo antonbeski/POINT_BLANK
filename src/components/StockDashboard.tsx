@@ -332,9 +332,7 @@ export default function StockDashboard({
 
       {/* Loading Overlay */}
       {isLoading && (
-        <div className="absolute inset-0 z-50 rounded-[16px] bg-background/95 backdrop-blur-sm">
-          <LoadingScreen fullScreen={false} message="Running analysis..." />
-        </div>
+        <LoadingScreen fullScreen={false} message="Running analysis..." />
       )}
 
       {/* Controls */}

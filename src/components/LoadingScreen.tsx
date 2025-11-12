@@ -11,11 +11,17 @@ interface LoadingScreenProps {
 export function LoadingScreen({ fullScreen = true, message }: LoadingScreenProps) {
   return (
     <div
-      className={`
-        fixed inset-0 z-[9999]
-        flex items-center justify-center
-        bg-background/95 backdrop-blur-sm
-      `}
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-background/95 backdrop-blur-sm"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
     >
       <div className="relative flex flex-col items-center gap-6">
         {/* Animated Logo Container */}
