@@ -85,7 +85,7 @@ export function LoadingScreen({ fullScreen = true, message }: LoadingScreenProps
 
         // Draw outer glow
         const gradient = ctx.createRadialGradient(
-          ripple.x, ripple.y, ripple.radius - 20,
+          ripple.x, ripple.y, Math.max(0, ripple.radius - 20),
           ripple.x, ripple.y, ripple.radius + 20
         );
         gradient.addColorStop(0, `rgba(147, 197, 253, 0)`);
