@@ -86,7 +86,7 @@ export function LoadingScreen({ fullScreen = true, message }: LoadingScreenProps
         // Draw outer glow
         const gradient = ctx.createRadialGradient(
           ripple.x, ripple.y, Math.max(0, ripple.radius - 20),
-          ripple.x, ripple.y, ripple.radius + 20
+          ripple.x, ripple.y, Math.max(0, ripple.radius + 20)
         );
         gradient.addColorStop(0, `rgba(147, 197, 253, 0)`);
         gradient.addColorStop(0.5, `rgba(147, 197, 253, ${ripple.opacity * 0.3})`);
@@ -95,21 +95,21 @@ export function LoadingScreen({ fullScreen = true, message }: LoadingScreenProps
         ctx.strokeStyle = gradient;
         ctx.lineWidth = 40;
         ctx.beginPath();
-        ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+        ctx.arc(ripple.x, ripple.y, Math.max(0, ripple.radius), 0, Math.PI * 2);
         ctx.stroke();
 
         // Draw main ripple ring
         ctx.strokeStyle = `rgba(255, 255, 255, ${ripple.opacity * 0.4})`;
         ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+        ctx.arc(ripple.x, ripple.y, Math.max(0, ripple.radius), 0, Math.PI * 2);
         ctx.stroke();
 
         // Draw inner highlight for caustic effect
         ctx.strokeStyle = `rgba(191, 219, 254, ${ripple.opacity * 0.6})`;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.arc(ripple.x, ripple.y, ripple.radius - 2, 0, Math.PI * 2);
+        ctx.arc(ripple.x, ripple.y, Math.max(0, ripple.radius - 2), 0, Math.PI * 2);
         ctx.stroke();
       }
 
