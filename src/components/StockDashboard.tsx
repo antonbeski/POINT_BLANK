@@ -329,24 +329,6 @@ export default function StockDashboard({
       )}
       aria-label="Stock market analysis dashboard">
 
-      {/* Header */}
-      <div className="relative w-full rounded-t-[16px] bg-[linear-gradient(180deg,rgba(27,28,33,0.9),rgba(18,19,23,0.9))]">
-        <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6 !w-[226px] !h-[60px]">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary ring-1 ring-border shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_8px_24px_rgba(0,0,0,0.4)]">
-              <LayoutDashboard className="h-5 w-5 text-primary" aria-hidden="true" />
-            </div>
-            <div className="min-w-0">
-              <p className="font-heading text-sm sm:text-base leading-tight tracking-wide text-foreground">
-                POINT BLANK
-              </p>
-              <p className="text-xs text-muted-foreground">Market Intelligence</p>
-            </div>
-          </div>
-        </div>
-        <Separator className="bg-border/60" />
-      </div>
-
       {/* Controls */}
       <div className="px-4 py-4 sm:px-6 sm:py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
