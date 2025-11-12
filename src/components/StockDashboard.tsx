@@ -951,8 +951,8 @@ function ChartCanvas({
         >
           <defs>
             <linearGradient id="volGrad" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="var(--chart-4)" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="var(--chart-4)" stopOpacity="0.05" />
+              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.05" />
             </linearGradient>
           </defs>
 
@@ -976,7 +976,7 @@ function ChartCanvas({
           {/* Price area/line optional */}
           {chartType === "line" && (
             <>
-              <path d={makePath(closes)} fill="none" stroke="var(--chart-1)" strokeWidth="1.8" />
+              <path d={makePath(closes)} fill="none" stroke="#3b82f6" strokeWidth="1.8" />
             </>
           )}
 
@@ -984,7 +984,7 @@ function ChartCanvas({
           {chartType === "candles" && visible.map((d, i) => {
             const x = getX(i)
             const isUp = d.close >= d.open
-            const color = isUp ? "var(--chart-3)" : "var(--chart-5)"
+            const color = isUp ? "#10b981" : "#ef4444"
             const yOpen = valToPriceY(d.open)
             const yClose = valToPriceY(d.close)
             const yHigh = valToPriceY(d.high)
@@ -1016,19 +1016,14 @@ function ChartCanvas({
           })}
 
           {/* Price lines */}
-          {ma20 && (<path d={ma20Path} fill="none" stroke="var(--chart-1)" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" opacity="0.9" />)}
-          {ma50 && (<path d={ma50Path} fill="none" stroke="var(--chart-2)" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" opacity="0.9" />)}
-          {ema12 && (<path d={ema12Path} fill="none" stroke="var(--chart-4)" strokeWidth="1.2" strokeDasharray="4 3" strokeLinejoin="round" strokeLinecap="round" opacity="0.9" />)}
+          {ma20 && (<path d={ma20Path} fill="none" stroke="#3b82f6" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" opacity="0.9" />)}
+          {ma50 && (<path d={ma50Path} fill="none" stroke="#f97316" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" opacity="0.9" />)}
+          {ema12 && (<path d={ema12Path} fill="none" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="4 3" strokeLinejoin="round" strokeLinecap="round" opacity="0.9" />)}
 
           {/* Bollinger Bands */}
-          {bbUpper && (<path d={bbUpperPath} fill="none" stroke="var(--chart-2)" strokeOpacity="0.5" strokeWidth="1" />)}
-          {bbLower && (<path d={bbLowerPath} fill="none" stroke="var(--chart-2)" strokeOpacity="0.5" strokeWidth="1" />)}
-          {bbUpper && bbLower && (
-            <path
-              d={`M ${getX(0)} ${valToPriceY(bbUpper[range.start])}`}
-              fill="none"
-            />
-          )}
+          {bbUpper && (<path d={bbUpperPath} fill="none" stroke="#06b6d4" strokeOpacity="0.6" strokeWidth="1" />)}
+          {bbLower && (<path d={bbLowerPath} fill="none" stroke="#06b6d4" strokeOpacity="0.6" strokeWidth="1" />)}
+          {bbMiddle && (<path d={bbMiddlePath} fill="none" stroke="#06b6d4" strokeOpacity="0.4" strokeWidth="1" strokeDasharray="2 2" />)}
 
           {/* Volume bars */}
           {visible.map((d, i) => {
@@ -1047,7 +1042,7 @@ function ChartCanvas({
             <path
               d={(function(){ let d=""; rsi14.slice(range.start, range.end+1).forEach((v,i)=>{ if(Number.isNaN(v)) return; const x=getX(i)+Math.floor(candlestickWidth/2); const y=yRsi(v); d+= d===""?`M ${x} ${y}`:` L ${x} ${y}`}); return d })()}
               fill="none"
-              stroke="var(--chart-1)"
+              stroke="#eab308"
               strokeWidth="1.2"
               opacity="0.95"
             />
@@ -1061,14 +1056,14 @@ function ChartCanvas({
             const y = yMacd(v.hist)
             const h = Math.abs(y - y0)
             return (
-              <rect key={`mh${i}`} x={x} y={Math.min(y, y0)} width={Math.max(1, candlestickWidth)} height={h} fill={v.hist >= 0 ? "var(--chart-3)" : "var(--chart-5)"} opacity="0.6" />
+              <rect key={`mh${i}`} x={x} y={Math.min(y, y0)} width={Math.max(1, candlestickWidth)} height={h} fill={v.hist >= 0 ? "#10b981" : "#ef4444"} opacity="0.6" />
             )
           })}
           {macdLine && (
             <path
               d={(function(){ let d=""; macdLine.slice(range.start, range.end+1).forEach((v,i)=>{ const x=getX(i)+Math.floor(candlestickWidth/2); const y=yMacd(v); d+= d===""?`M ${x} ${y}`:` L ${x} ${y}`}); return d })()}
               fill="none"
-              stroke="var(--chart-1)"
+              stroke="#3b82f6"
               strokeWidth="1.2"
             />
           )}
@@ -1076,7 +1071,7 @@ function ChartCanvas({
             <path
               d={(function(){ let d=""; macdSignal.slice(range.start, range.end+1).forEach((v,i)=>{ const x=getX(i)+Math.floor(candlestickWidth/2); const y=yMacd(v); d+= d===""?`M ${x} ${y}`:` L ${x} ${y}`}); return d })()}
               fill="none"
-              stroke="var(--chart-2)"
+              stroke="#ef4444"
               strokeWidth="1.2"
             />
           )}
@@ -1113,13 +1108,15 @@ function ChartCanvas({
         </div>
       </div>
 
-      {/* Legend for small screens */}
-      <div className="mt-3 flex sm:hidden flex-wrap items-center gap-3 text-xs">
-        <LegendDot color="var(--chart-1)" label="MA20" />
-        <LegendDot color="var(--chart-2)" label="MA50" />
-        <LegendDot color="var(--chart-4)" label="EMA12" />
-        <LegendDot color="var(--chart-5)" label="Bear" hollow />
-        <LegendDot color="var(--chart-3)" label="Bull" hollow />
+      {/* Legend */}
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+        <LegendDot color="#10b981" label="Bull" />
+        <LegendDot color="#ef4444" label="Bear" />
+        <LegendDot color="#3b82f6" label="MA20" />
+        <LegendDot color="#f97316" label="MA50" />
+        <LegendDot color="#a855f7" label="EMA12" />
+        <LegendDot color="#06b6d4" label="BB" />
+        <LegendDot color="#eab308" label="RSI" />
       </div>
     </div>
   )
