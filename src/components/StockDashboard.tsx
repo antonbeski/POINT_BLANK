@@ -28,6 +28,7 @@ import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
+import { LoadingScreen } from "@/components/LoadingScreen";
 import { toast } from "sonner";
 import {
   LayoutDashboard,
@@ -324,10 +325,17 @@ export default function StockDashboard({
   return (
     <section
       className={cn(
-        "w-full max-w-full rounded-[16px] bg-card/80 backdrop-blur supports-[backdrop-filter]:bg-card/70 ring-1 ring-border",
+        "w-full max-w-full rounded-[16px] bg-card/80 backdrop-blur supports-[backdrop-filter]:bg-card/70 ring-1 ring-border relative",
         className
       )}
       aria-label="Stock market analysis dashboard">
+
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 z-50 rounded-[16px] bg-background/95 backdrop-blur-sm">
+          <LoadingScreen fullScreen={false} message="Running analysis..." />
+        </div>
+      )}
 
       {/* Controls */}
       <div className="px-4 py-4 sm:px-6 sm:py-6">
@@ -1102,4 +1110,15 @@ function ChartCanvas({
       </div>
     </div>);
 
+}
+
+function LoadingScreen({ fullScreen, message }: {fullScreen?: boolean;message: string;}) {
+  return (
+    <div className={`absolute inset-0 z-50 ${fullScreen ? "w-full h-full" : "w-full h-full"} rounded-[16px] bg-background/95 backdrop-blur-sm flex items-center justify-center`}>
+      <div className="text-center">
+        <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        <p className="mt-4 text-lg font-medium text-primary">{message}</p>
+      </div>
+    </div>
+  );
 }
