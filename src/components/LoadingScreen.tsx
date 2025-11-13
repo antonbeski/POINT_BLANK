@@ -20,8 +20,16 @@ export function LoadingScreen({ fullScreen = true, message }: LoadingScreenProps
 
     // Set canvas size
     const updateSize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      if (fullScreen) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      } else {
+        const rect = canvas.parentElement?.getBoundingClientRect();
+        if (rect) {
+          canvas.width = rect.width;
+          canvas.height = rect.height;
+        }
+      }
     };
     updateSize();
     window.addEventListener("resize", updateSize);
@@ -123,7 +131,7 @@ export function LoadingScreen({ fullScreen = true, message }: LoadingScreenProps
       window.removeEventListener("resize", updateSize);
       cancelAnimationFrame(animationFrame);
     };
-  }, []);
+  }, [fullScreen]);
 
   return (
     <>
@@ -141,13 +149,17 @@ export function LoadingScreen({ fullScreen = true, message }: LoadingScreenProps
       `}} />
       
       <div
-        className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
+        className={fullScreen ? "fixed inset-0 z-[9999]" : "absolute inset-0 z-50"}
         style={{
-          position: 'fixed',
+          position: fullScreen ? 'fixed' : 'absolute',
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
           background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(10, 10, 20, 0.98) 100%)'
         }}
       >
