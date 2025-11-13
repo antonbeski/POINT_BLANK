@@ -28,7 +28,6 @@ import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LoadingScreen } from "@/components/LoadingScreen";
 import { toast } from "sonner";
 import {
   LayoutDashboard,
@@ -329,11 +328,6 @@ export default function StockDashboard({
         className
       )}
       aria-label="Stock market analysis dashboard">
-
-      {/* Loading Overlay */}
-      {isLoading && (
-        <LoadingScreen fullScreen={false} message="Running analysis..." />
-      )}
 
       {/* Controls */}
       <div className="px-4 py-4 sm:px-6 sm:py-6">

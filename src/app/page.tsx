@@ -4,7 +4,6 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import StockDashboard, { StockDashboardProps } from "@/components/StockDashboard";
-import { LoadingScreen } from "@/components/LoadingScreen";
 import { Toaster } from "sonner";
 import { toast } from "sonner";
 import { authClient, useSession } from "@/lib/auth-client";
