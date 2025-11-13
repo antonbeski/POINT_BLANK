@@ -245,6 +245,7 @@ export default function StockDashboard({
   const [isTableOpen, setIsTableOpen] = React.useState(false);
   const [chartType, setChartType] = React.useState<"candles" | "line">("candles");
   const [logScale, setLogScale] = React.useState(false);
+  const [triggerExport, setTriggerExport] = React.useState(false);
 
   const points = React.useMemo(() => {
     switch (period) {
@@ -294,7 +295,7 @@ export default function StockDashboard({
     }, 1000 + Math.floor(Math.random() * 800));
   }
 
-  function handleDownloadCSV() {
+  const handleDownloadCSV = React.useCallback(() => {
     try {
       const headers = ["date", "open", "high", "low", "close", "volume"];
       const csv =
@@ -319,7 +320,13 @@ export default function StockDashboard({
     } catch {
       toast.error("Failed to export CSV");
     }
-  }
+  }, [data, ticker, period, interval]);
+
+  const handleExportPNG = React.useCallback(() => {
+    setTriggerExport(true);
+    // Reset trigger after a brief delay
+    setTimeout(() => setTriggerExport(false), 100);
+  }, []);
 
   return (
     <section
@@ -490,7 +497,7 @@ export default function StockDashboard({
                 {logScale ? "Log" : "Linear"}
               </button>
               <button
-                onClick={() => document.getElementById("pb-chart-svg")?.dispatchEvent(new CustomEvent("pb-export"))}
+                onClick={handleExportPNG}
                 className="rounded-lg px-2 py-1 ring-1 ring-border bg-card/60 hover:bg-card">
 
                 Export PNG
@@ -513,7 +520,8 @@ export default function StockDashboard({
                 macdHist={showIndicators ? macdCalc.hist : undefined}
                 isLoading={isLoading}
                 chartType={chartType}
-                logScale={logScale} />
+                logScale={logScale}
+                triggerExport={triggerExport} />
 
             </div>
           </CardContent>
@@ -718,8 +726,71 @@ function ChartCanvas({
   macdHist,
   isLoading,
   chartType = "candles",
-  logScale = false
-}: {data: OHLCV[];ma20?: number[];ma50?: number[];ema12?: number[];rsi14?: number[];bbUpper?: number[];bbMiddle?: number[];bbLower?: number[];macdLine?: number[];macdSignal?: number[];macdHist?: number[];isLoading: boolean;chartType?: "candles" | "line";logScale?: boolean;}) {
+  logScale = false,
+  triggerExport = false
+}: {
+  data: OHLCV[];
+  ma20?: number[];
+  ma50?: number[];
+  ema12?: number[];
+  rsi14?: number[];
+  bbUpper?: number[];
+  bbMiddle?: number[];
+  bbLower?: number[];
+  macdLine?: number[];
+  macdSignal?: number[];
+  macdHist?: number[];
+  isLoading: boolean;
+  chartType?: "candles" | "line";
+  logScale?: boolean;
+  triggerExport?: boolean;
+}) {
+  const svgRef = React.useRef<SVGSVGElement>(null);
+  
+  // Export PNG using React ref
+  React.useEffect(() => {
+    if (!triggerExport || !svgRef.current) return;
+    
+    const width = 1200;
+    const height = 520;
+    const svgElement = svgRef.current;
+    
+    try {
+      const svgText = new XMLSerializer().serializeToString(svgElement);
+      const blob = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        
+        if (ctx) {
+          ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--color-card").trim() || "#0a0a0a";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+          
+          canvas.toBlob((png) => {
+            if (!png) return;
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(png);
+            a.download = `chart_${Date.now()}.png`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+          });
+        }
+        URL.revokeObjectURL(url);
+      };
+      
+      img.src = url;
+    } catch (error) {
+      console.error("Failed to export PNG:", error);
+      toast.error("Failed to export PNG");
+    }
+  }, [triggerExport]);
+
   if (isLoading) {
     return (
       <div className="p-4 sm:p-6">
@@ -827,39 +898,6 @@ function ChartCanvas({
     setRange({ start, end });
   };
 
-  // Export PNG using SVG to canvas
-  React.useEffect(() => {
-    const el = document.getElementById("pb-chart-svg");
-    if (!el) return;
-    const handler = () => {
-      const svgText = new XMLSerializer().serializeToString(el as Node);
-      const blob = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d")!;
-        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--color-card").trim() || "#0a0a0a";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0);
-        canvas.toBlob((png) => {
-          if (!png) return;
-          const a = document.createElement("a");
-          a.href = URL.createObjectURL(png);
-          a.download = `chart_${Date.now()}.png`;
-          a.click();
-          URL.revokeObjectURL(a.href);
-        });
-        URL.revokeObjectURL(url);
-      };
-      img.src = url;
-    };
-    el.addEventListener("pb-export" as any, handler);
-    return () => el.removeEventListener("pb-export" as any, handler);
-  }, []);
-
   const makePath = (series?: number[]) => {
     if (!series) return "";
     let d = "";
@@ -895,7 +933,7 @@ function ChartCanvas({
     <div className="p-3 sm:p-4">
       <div className="relative min-w-0 overflow-hidden rounded-xl bg-card/40 ring-1 ring-border shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
         <svg
-          id="pb-chart-svg"
+          ref={svgRef}
           viewBox={`0 0 ${width} ${height}`}
           width="100%"
           height="auto"
